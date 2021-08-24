@@ -54,12 +54,8 @@ func RegexpExactMatches(expression string) Validator {
 	regex.Longest()
 
 	return func(chk string) error {
-		if loc := regex.FindStringIndex(chk); loc != nil {
-			if len(loc) == 2 {
-				if loc[0] == 0 && loc[1] == len(chk) {
-					return nil
-				}
-			}
+		if regex.MatchString(expression) {
+			return nil
 		}
 		return ErrUnmatchRegexp
 	}
