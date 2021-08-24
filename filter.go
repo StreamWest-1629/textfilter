@@ -51,7 +51,8 @@ func CloneString(src string) (dest string) {
 func RegisterFiltering(filter Filter, chkStr string, whenSuccess func() error) error {
 
 	_, err := filter.Add(chkStr, func(passed string) (done bool, err error) {
-		return true, whenSuccess()
+		err = whenSuccess()
+		return err == nil, err
 	})
 
 	return err
@@ -74,7 +75,8 @@ func regPairs(filters []Filter, chkStrs []string, whenSuccess func() error, idx 
 		})
 	} else {
 		return filters[idx].Add(chkStrs[idx], func(passed string) (done bool, err error) {
-			return true, whenSuccess()
+			err = whenSuccess()
+			return err == nil, err
 		})
 	}
 }
