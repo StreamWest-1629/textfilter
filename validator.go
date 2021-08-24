@@ -49,7 +49,7 @@ func (v Validator) Remove(deleted string, internal Guaranteed) (done bool, err e
 	return internal(deleted)
 }
 
-func RegexpExactMatches(expression string) Validator {
+func RegexpMatches(expression string) Validator {
 	regex := regexp.MustCompile(expression)
 	regex.Longest()
 
