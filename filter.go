@@ -47,3 +47,34 @@ func CloneString(src string) (dest string) {
 	copy(buffer, src)
 	return string(buffer)
 }
+
+func RegisterFiltering(filter Filter, chkStr string, whenSuccess func() error) error {
+
+	_, err := filter.Add(chkStr, func(passed string) (done bool, err error) {
+		return true, whenSuccess()
+	})
+
+	return err
+}
+
+func RegisterFilteringPairs(filters []Filter, chkStrs []string, whenSuccess func() error) error {
+	if len(filters) == 0 {
+		panic("no filters in arguments")
+	} else if len(filters) != len(chkStrs) {
+		panic("length of filters and chkStrs arguments are not equal")
+	}
+	_, err := regPairs(filters, chkStrs, whenSuccess, 0)
+	return err
+}
+
+func regPairs(filters []Filter, chkStrs []string, whenSuccess func() error, idx int) (bool, error) {
+	if idx < len(filters) {
+		return filters[idx].Add(chkStrs[idx], func(passed string) (done bool, err error) {
+			return regPairs(filters, chkStrs, whenSuccess, idx+1)
+		})
+	} else {
+		return filters[idx].Add(chkStrs[idx], func(passed string) (done bool, err error) {
+			return true, whenSuccess()
+		})
+	}
+}
