@@ -51,10 +51,9 @@ func (v Validator) Remove(deleted string, internal Guaranteed) (done bool, err e
 
 func RegexpMatches(expression string) Validator {
 	regex := regexp.MustCompile(expression)
-	regex.Longest()
 
 	return func(chk string) error {
-		if regex.MatchString(expression) {
+		if regex.MatchString(chk) {
 			return nil
 		}
 		return ErrUnmatchRegexp
